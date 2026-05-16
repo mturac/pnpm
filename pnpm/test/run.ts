@@ -140,6 +140,21 @@ test('silent run only prints the output of the child process', async () => {
   expect(result.stdout.toString().trim()).toBe('hi')
 })
 
+test('silent run does not print verify-deps-before-run install output', async () => {
+  prepare({
+    dependencies: {
+      'is-positive': '1.0.0',
+    },
+    scripts: {
+      hi: 'node -e "process.stdout.write(JSON.stringify({ ok: true }))"',
+    },
+  })
+
+  const result = execPnpmSync(['run', '--silent', '--config.verify-deps-before-run=install', 'hi'], { expectSuccess: true })
+
+  expect(result.stdout.toString()).toBe('{"ok":true}')
+})
+
 testOnPosix('pnpm run with preferSymlinkedExecutables true', async () => {
   prepare({
     scripts: {

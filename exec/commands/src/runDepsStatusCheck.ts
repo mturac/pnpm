@@ -7,6 +7,7 @@ import enquirer from 'enquirer'
 
 export interface RunDepsStatusCheckOptions extends CheckDepsStatusOptions {
   dir: string
+  reporter?: string
   verifyDepsBeforeRun?: VerifyDepsBeforeRun
 }
 
@@ -20,6 +21,9 @@ export async function runDepsStatusCheck (opts: RunDepsStatusCheckOptions): Prom
   if (upToDate) return
 
   const command = ['install', ...createInstallArgs(workspaceState?.settings)]
+  if (opts.reporter === 'silent') {
+    command.push('--silent')
+  }
   const install = runPnpmCli.bind(null, command, { cwd: opts.dir })
 
   switch (opts.verifyDepsBeforeRun) {
